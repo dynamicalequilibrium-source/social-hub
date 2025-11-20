@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>사회적경제 지원사업 알리미</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-slate-100 text-slate-800">
+
+    <!-- 상단 헤더 -->
+    <header class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-4 shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
+            <h1 class="text-xl font-bold mb-4 md:mb-0 flex items-center">
+                <i class="fas fa-rocket mr-2"></i>Social Impact Hub
+            </h1>
+            <!-- 검색창 -->
+            <form action="/search" method="get" class="w-full md:w-auto flex">
+                <input type="text" name="keyword" placeholder="사업명, 키워드 검색..." class="w-full px-4 py-2 rounded-l-lg text-slate-800 focus:outline-none shadow-inner">
+                <button type="submit" class="bg-yellow-500 text-white font-bold px-4 py-2 rounded-r-lg hover:bg-yellow-600 transition shadow">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+        </div>
+    </header>
+
+    <!-- 메인 리스트 -->
+    <main class="container mx-auto p-4 md:p-6 max-w-6xl">
+        <div class="mb-6">
+            <h2 class="text-lg font-bold text-slate-700 border-l-4 border-blue-500 pl-3">
+                실시간 지원사업 공고 (한국사회적기업진흥원)
+            </h2>
+            <p class="text-xs text-slate-500 mt-1 ml-3">매일 자동으로 업데이트되는 최신 정보입니다.</p>
+        </div>
+
+        <!-- 카드 그리드 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {% for program in programs %}
+            <div class="bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-200 overflow-hidden flex flex-col">
+                
+                <!-- 카드 상단: 배지 및 날짜 -->
+                <div class="p-5 flex-grow">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="flex gap-1">
+                            <span class="text-[10px] font-bold px-2 py-1 rounded border 
+                                {% if program.category == '사회적기업' %} bg-orange-50 text-orange-600 border-orange-200
+                                {% elif program.category == '소셜벤처' %} bg-purple-50 text-purple-600 border-purple-200
+                                {% else %} bg-gray-50 text-gray-600 border-gray-200 {% endif %}">
+                                {{ program.category }}
+                            </span>
+                            <!-- 신규 배지 (최근 7일 이내) -->
+                            {% if program.is_new %}
+                            <span class="text-[10px] font-bold px-2 py-1 rounded bg-red-100 text-red-600 animate-pulse">
+                                N<span class="hidden sm:inline">EW</span>
+                            </span>
+                            {% endif %}
+                        </div>
+                        <span class="text-xs text-slate-400">{{ program.reg_date }}</span>
+                    </div>
+
+                    <h3 class="font-bold text-slate-800 text-lg leading-snug mb-2 hover:text-blue-600 transition cursor-pointer">
+                        <a href="{{ program.link }}" target="_blank">{{ program.title }}</a>
+                    </h3>
+                    <p class="text-xs text-slate-500"><i class="far fa-building mr-1"></i>{{ program.agency }}</p>
+                </div>
+
+                <!-- 카드 하단: 버튼 -->
+                <div class="bg-slate-50 p-3 border-t border-slate-100">
+                    <a href="{{ program.link }}" target="_blank" class="block w-full text-center bg-white border border-blue-200 text-blue-600 text-sm font-bold py-2 rounded-lg hover:bg-blue-600 hover:text-white hover:border-transparent transition">
+                        자세히 보기 <i class="fas fa-arrow-right ml-1 text-xs"></i>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if not programs %}
+        <div class="flex flex-col items-center justify-center py-20 text-slate-400">
+            <i class="far fa-folder-open text-5xl mb-4"></i>
+            <p>검색 결과가 없거나 데이터를 불러오는 중입니다.</p>
+        </div>
+        {% endif %}
+    </main>
+
+    <footer class="bg-slate-800 text-slate-400 py-8 mt-10 text-center text-xs">
+        <p>&copy; 2024 Social Impact Hub. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>
